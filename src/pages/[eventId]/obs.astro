@@ -1,0 +1,22 @@
+---
+import Base from '$layouts/base.astro'
+---
+
+<Base>
+  <main class="w-full h-full flex flex-col justify-between">
+    <section class="p-8 flex justify-end">
+      <img src="/garten.svg" class="w-[60px] h-[60px]" />
+    </section>
+    <section
+      style="background-image:url('/creativecoding/bg.png');"
+      class="w-full h-[120px] bg-neutral-200 bg-no-repeat bg-cover relative"
+    >
+      <div class="px-20"></div>
+      <div
+        class="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-end px-20"
+      >
+        <img src="/creativecoding/cleverse.png" class="h-[50px] w-auto" />
+      </div>
+    </section>
+  </main>
+</Base>
