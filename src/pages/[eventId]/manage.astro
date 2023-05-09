@@ -2,9 +2,11 @@
 import { pocketbase } from '$constants/pocketbase'
 import Base from '$layouts/base.astro'
 
-const eventLogo = pocketbase.collection('event')
+const eventId = Astro.params['eventId']!
+
+const event = await pocketbase.collection('events').getOne(eventId)
 ---
 
 <Base>
-  <h1>asasdd</h1>
+  <h1>Event: {event.name}</h1>
 </Base>
