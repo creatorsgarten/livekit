@@ -1,14 +1,17 @@
 ---
 import { pocketbase } from '$constants/pocketbase'
 import Base from '$layouts/base.astro'
+import EventForm from '$components/EventForm.svelte'
+import type { EventsResponse } from 'pocketbase-types'
 
 const eventId = Astro.params['eventId']!
 
-const event = await pocketbase.collection('events').getOne(eventId)
+const event = await pocketbase
+  .collection('events')
+  .getOne<EventsResponse>(eventId)
 ---
 
 <Base>
-  <div class="max-w-screen-lg mx-auto my-4">
-    <h1>Event: {event.name}</h1>
-  </div>
+  <a href="/">← Back</a>
+  <EventForm event={event} client:idle />
 </Base>

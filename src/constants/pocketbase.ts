@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase'
 
-export const pocketbase = new PocketBase(import.meta.env.POCKETBASE_URL)
+export const pocketbase = new PocketBase(import.meta.env.PUBLIC_POCKETBASE_URL)
 
 await pocketbase.admins.authWithPassword(
   import.meta.env.PUBLIC_POCKETBASE_ADMIN_USERNAME,
