@@ -8,5 +8,7 @@ const event = await pocketbase.collection('events').getOne(eventId)
 ---
 
 <Base>
-  <h1>Event: {event.name}</h1>
+  <div class="max-w-screen-lg mx-auto my-4">
+    <h1>Event: {event.name}</h1>
+  </div>
 </Base>
