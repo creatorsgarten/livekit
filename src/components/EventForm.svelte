@@ -5,7 +5,9 @@
   export let event: EventsResponse
 
   let logoPreview: HTMLImageElement
+  let backgroundImagePreview: HTMLImageElement
   let logoInput: HTMLInputElement
+  let backgroundImageInput: HTMLInputElement
   let responseMessage: string
 
   async function onSubmit(ev: SubmitEvent) {
@@ -31,7 +33,7 @@
     event = record as unknown as EventsResponse
   }
 
-  const previewLogo = (event: Event) => {
+  const previewImage = (event: Event, imagePreview: HTMLImageElement) => {
     const element = event.currentTarget as HTMLInputElement
     let fileList: FileList | null = element.files
 
@@ -39,7 +41,7 @@
     const reader = new FileReader()
 
     reader.addEventListener('load', event => {
-      logoPreview.src = event.target!.result!.toString()
+      imagePreview.src = event.target!.result!.toString()
     })
 
     if (file) {
@@ -70,7 +72,11 @@
       <img
         class="w-16 h-auto object-contain"
         src={logoPreview?.src ||
-          pocketbase.files.getUrl(event, event.logo, { thumb: '100x250' })}
+          (!!event.logo
+            ? pocketbase.files.getUrl(event, event.logo, {
+                thumb: '150x150',
+              })
+            : 'https://placehold.co/150x150.png')}
         alt="Event logo"
         bind:this={logoPreview}
       />
@@ -80,27 +86,56 @@
         id="logo"
         name="logo"
         bind:this={logoInput}
-        on:change={previewLogo}
+        on:change={e => previewImage(e, logoPreview)}
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
     </div>
 
     <!-- TODO: Rest of the inputs -->
-    <!-- <div class="mb-4">
-      <label class="block text-gray-700 font-bold mb-2" for="backgroundType"
+    <div class="mb-4">
+      <label class="block text-gray-700 font-bold mb-2" for="useBackgroundImage"
         >Background Type:</label
       >
       <select
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="backgroundType"
-        name="backgroundType"
+        id="useBackgroundImage"
+        name="useBackgroundImage"
+        bind:value={event.useBackgroundImage}
         required
       >
         <option value="">Select a background type</option>
-        <option value="color">Color</option>
-        <option value="image">Image</option>
+        <option value={false}>Color</option>
+        <option value={true}>Image</option>
       </select>
     </div>
+    {#if event.useBackgroundImage}
+      <div class="mb-4 flex items-center justify-between gap-2">
+        <label class="block text-gray-700 font-bold mb-2" for="backgroundImage"
+          >Background Image:</label
+        >
+        <img
+          class="w-16 h-auto object-contain"
+          src={backgroundImagePreview?.src ||
+            (!!event.backgroundImage
+              ? pocketbase.files.getUrl(event, event.backgroundImage, {
+                  thumb: '150x150',
+                })
+              : 'https://placehold.co/150x150.png')}
+          alt="Background"
+          bind:this={backgroundImagePreview}
+        />
+
+        <input
+          type="file"
+          id="backgroundImage"
+          name="backgroundImage"
+          bind:this={backgroundImageInput}
+          on:change={e => previewImage(e, backgroundImagePreview)}
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+    {:else}{/if}
+    <!--
 
     <div class="mb-4" id="backgroundValueColorDiv" style="display: none;">
       <label
