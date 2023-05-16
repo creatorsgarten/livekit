@@ -8,7 +8,9 @@ const eventId = Astro.params['eventId']!
 
 const event = await pocketbase
   .collection('events')
-  .getOne<EventsResponse>(eventId)
+  .getOne<EventsResponse>(eventId, {
+    expand: 'sponsors',
+  })
 ---
 
 <Base>

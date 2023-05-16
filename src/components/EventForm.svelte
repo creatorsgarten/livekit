@@ -1,10 +1,9 @@
 <script lang="ts">
   import { pocketbase } from '$constants/pocketbase'
-  import type { EventsResponse } from 'pocketbase-types'
+  import type { EventsResponse, SponsorsResponse } from 'pocketbase-types'
   import ColorPicker from 'svelte-awesome-color-picker'
-  import { bind } from 'svelte/internal'
 
-  export let event: EventsResponse
+  export let event: EventsResponse<{ sponsors: SponsorsResponse[] }>
 
   let logoPreview: HTMLImageElement
   let backgroundImagePreview: HTMLImageElement
@@ -32,7 +31,7 @@
 
     responseMessage = `Event ${record.name} updated!`
     logoInput.value = ''
-    event = record as unknown as EventsResponse
+    event = record as unknown as typeof event
   }
 
   const previewImage = (event: Event, imagePreview: HTMLImageElement) => {
@@ -93,7 +92,6 @@
       />
     </div>
 
-    <!-- TODO: Rest of the inputs -->
     <div class="mb-4">
       <label class="block text-gray-700 font-bold mb-2" for="useBackgroundImage"
         >Background Type:</label
@@ -154,38 +152,36 @@
         bind:value={event.backgroundColor}
       />
     {/if}
+
+    <label class="block text-gray-700 font-bold mb-2" for="sponsors"
+      >Sponsors:</label
+    >
+
+    <code>TODO: Upload multiple files with associations</code>
+    {#each event.expand?.sponsors || [] as sponsor, idx}
+      <div class="mb-4 flex items-center justify-between gap-2">
+        <img
+          class="w-16 h-auto object-contain"
+          src={!!sponsor.logo
+            ? pocketbase.files.getUrl(sponsor, sponsor.logo, {
+                thumb: '150x150',
+              })
+            : 'https://placehold.co/150x150.png'}
+          alt="Sponsor logo"
+          bind:this={logoPreview}
+        />
+
+        <input
+          type="file"
+          id={`sponsors[${idx}][logo]`}
+          name={`sponsors[${idx}][logo]`}
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+    {/each}
     <!--
 
-    <div class="mb-4" id="backgroundValueColorDiv" style="display: none;">
-      <label
-        class="block text-gray-700 font-bold mb-2"
-        for="backgroundValueColor">Background Color:</label
-      >
-      <input
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="backgroundValueColor"
-        type="color"
-        name="backgroundValue"
-      />
-    </div>
-
-    <div class="mb-4" id="backgroundValueImageDiv" style="display: none;">
-      <label
-        class="block text-gray-700 font-bold mb-2"
-        for="backgroundValueImage">Background Image URL:</label
-      >
-      <input
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="backgroundValueImage"
-        type="url"
-        name="backgroundValue"
-      />
-    </div>
-
     <div class="mb-4">
-      <label class="block text-gray-700 font-bold mb-2" for="sponsors"
-        >Sponsors:</label
-      >
       <div id="sponsorList">
         <div class="mb-4 sponsor">
           <label class="block text-gray-700 font-bold mb-2" for="sponsor1Name"
