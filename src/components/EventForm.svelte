@@ -1,6 +1,8 @@
 <script lang="ts">
   import { pocketbase } from '$constants/pocketbase'
   import type { EventsResponse } from 'pocketbase-types'
+  import ColorPicker from 'svelte-awesome-color-picker'
+  import { bind } from 'svelte/internal'
 
   export let event: EventsResponse
 
@@ -108,6 +110,7 @@
         <option value={true}>Image</option>
       </select>
     </div>
+
     {#if event.useBackgroundImage}
       <div class="mb-4 flex items-center justify-between gap-2">
         <label class="block text-gray-700 font-bold mb-2" for="backgroundImage"
@@ -134,7 +137,23 @@
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       </div>
-    {:else}{/if}
+    {:else if event.useBackgroundImage === false}
+      <div
+        class="flex gap-2 items-center shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      >
+        <ColorPicker
+          bind:hex={event.backgroundColor}
+          label={event.backgroundColor || 'Select a color'}
+          canChangeMode={false}
+          isPopup={false}
+        />
+      </div>
+      <input
+        type="hidden"
+        name="backgroundColor"
+        bind:value={event.backgroundColor}
+      />
+    {/if}
     <!--
 
     <div class="mb-4" id="backgroundValueColorDiv" style="display: none;">
