@@ -1,10 +1,19 @@
 ---
 import { pocketbase } from '$constants/pocketbase'
 import Base from '$layouts/base.astro'
+import EventForm from '$components/EventForm.svelte'
+import type { EventsResponse } from 'pocketbase-types'
 
-const eventLogo = pocketbase.collection('event')
+const eventId = Astro.params['eventId']!
+
+const event = await pocketbase
+  .collection('events')
+  .getOne<EventsResponse>(eventId, {
+    expand: 'sponsors',
+  })
 ---
 
 <Base>
-  <h1>asasdd</h1>
+  <a href="/">← Back</a>
+  <EventForm event={event} client:idle />
 </Base>

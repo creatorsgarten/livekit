@@ -1,0 +1,38 @@
+---
+import { pocketbase } from '$constants/pocketbase'
+import Base from '$layouts/base.astro'
+
+const event = await pocketbase.collection('events').getFullList()
+---
+
+<Base>
+  <div class="max-w-screen-lg mx-auto my-4">
+    <h1 class="text-3xl font-bold mb-4">Events</h1>
+
+    <ul class="divide-y divide-gray-200">
+      {
+        event.map(event => (
+          <li class="py-2">
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-medium">{event.name}</span>
+              <div class="space-x-2">
+                <a
+                  href={`/${event.id}/obs`}
+                  class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                >
+                  Overlay
+                </a>
+                <a
+                  href={`/${event.id}/manage`}
+                  class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                >
+                  Manage
+                </a>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>
